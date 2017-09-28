@@ -42,9 +42,25 @@
 
 
 
+(defn eval-expr
+  [bindings expr-str]
+  (let [expr  (read-string expr-str)
+        fk    (keyword (first expr))
+        f     (and fk (get bindings fk nil))
+        args  (seq (rest expr))]
+
+    (when-not f
+      (throw (ex-info "No binding for token" {:token fk})))
+
+    (if args
+      (apply f args)
+      (f))))
+
+
+
 (defn replace-expr
   [bindings s [match expr-str :as token]]
-  (if-let [replacement-value (eval (read-string expr-str))]
+  (if-let [replacement-value (str (eval-expr bindings expr-str))]
     (str/replace s match replacement-value)
     (throw (ex-info "Expression evaluated to nil" {:token match}))))
 
@@ -59,42 +75,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                                            ;;
-;;                      ---==| F U N C T I O N S |==----                      ;;
-;;                                                                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defn- tokenise-fns
-  [s]
-  (re-seq #"\(([^(\p{Blank}|\))]+)" s))
-
-
-
-(defn- replace-fn
-  [bindings s [match replacement-key :as token]]
-  (if-let [replacement-value (get bindings (keyword replacement-key))]
-    (do
-      (when-not (fn? (eval (read-string replacement-value)))
-        (throw (ex-info "Invalid binding for token - must be a fn"
-                        {:token replacement-key})))
-
-      (str/replace s match (str "(" replacement-value " ")))
-    (throw (ex-info "No binding for token" {:token match}))))
-
-
-
-(defn- render-fns
-  [bindings s]
-  (let [tokens (tokenise-fns s)]
-    (reduce (partial replace-fn bindings) s tokens)))
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                                                                            ;;
 ;;                     ---==| P U B L I C   A P I |==----                     ;;
 ;;                                                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn render-string
   [bindings s]
   (->> (render-vars bindings s)
-       (render-fns  bindings)
        (render-exprs bindings)))

@@ -31,5 +31,4 @@
  "${hello} ${name}!"                 nil                                                  "hello sathya!"
  "${hello} world ${name}!"           nil                                                  "hello world sathya!"
  "%{(quotation)}"                    nil                                                  (throws Exception)
- "%{(quotation)}"                   {:quotation "stem.core-test/quotation"}               (quotation)
- "Today is %{(format \"${f}\" (today))}" {:f "%1$td-%1$tm-%1$tY" :format "clojure.core/format" :today "stem.core-test/today"} (str "Today is " (format "%1$td-%1$tm-%1$tY" (today))))
+ "%{(quotation)}"                   {:quotation "stem.core-test/quotation"}               (quotation))
