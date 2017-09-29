@@ -3,7 +3,7 @@
 
 ## Usage
 ```clojure
-[stem "1.0.0"]
+[stem "1.0.1"]
 
 ;; In your namespace:
 (ns my.ns
@@ -27,15 +27,14 @@ Expressions must be wrapped within `%{}`. Expressions are simple s-expressions a
 ```clojure
 ;; returns "HELLO, WORLD"
 ;; functions used in expressions must also be declared in the bindings map
-;; keyed by the function name/alias (as keyword). Value must be a the fully
-;; qualified name of the function (ns/function-name) (as string).
-(let [bindings {:capitalize "clojure.string/capitalize"}]
+;; keyed by the function name/alias (as symbol).
+(let [bindings {'capitalize clojure.string/capitalize}]
     (render-string bindings "Hello, %{(capitalize \"Hello, World\"}"))
 
 ;; variables can be used within expressions
 ;; returns "Hello, WORLD"
 (let [bindings {:name       "world"
-                :capitalize "clojure.string/capitalize"}]
+                'capitalize 'clojure.string/capitalize}]
     (render-string bindings "Hello, %{(capitalize \"${name}"}"))
 ```
 

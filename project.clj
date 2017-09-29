@@ -1,4 +1,4 @@
-(defproject stem "1.0.0"
+(defproject stem "1.0.1"
   :description "stem - simple templating engine"
   :url "https://github.com/sathyavijayan/stem"
   :license {:name "Apache License 2.0"
