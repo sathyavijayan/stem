@@ -45,7 +45,7 @@
 (defn eval-expr
   [bindings expr-str]
   (let [expr  (read-string expr-str)
-        fk    (keyword (first expr))
+        fk    (first expr)
         f     (and fk (get bindings fk nil))
         args  (seq (rest expr))]
 
@@ -80,5 +80,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn render-string
   [bindings s]
-  (->> (render-vars bindings s)
-       (render-exprs bindings)))
+  (when s
+    (->> (render-vars bindings s)
+         (render-exprs bindings))))
