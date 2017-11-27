@@ -1,5 +1,6 @@
 (ns stem.core
-  (:require [clojure.string :as str]))
+  (:require [clojure.edn :as edn]
+            [clojure.string :as str]))
 
 ;; STEM - simple templating engine.
 ;;
@@ -44,7 +45,7 @@
 
 (defn eval-expr
   [bindings expr-str]
-  (let [expr  (read-string expr-str)
+  (let [expr  (edn/read-string expr-str)
         fk    (first expr)
         f     (and fk (get bindings fk nil))
         args  (seq (rest expr))]

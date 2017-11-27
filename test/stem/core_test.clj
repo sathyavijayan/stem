@@ -31,4 +31,5 @@
  "${hello} ${name}!"                 nil                                                  "hello sathya!"
  "${hello} world ${name}!"           nil                                                  "hello world sathya!"
  "%{(quotation)}"                    nil                                                  (throws Exception)
- "%{(quotation)}"                   {:quotation "stem.core-test/quotation"}               (quotation))
+ "%{(quotation)}"                   {:quotation "stem.core-test/quotation"}               (quotation)
+ "%{#=(java.lang.System/exit 42)}"   nil                                                  (throws Exception))
