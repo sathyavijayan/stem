@@ -30,4 +30,6 @@
  "${hello} world ${name}!"           nil                                                  "hello world sathya!"
  "%{(quotation)}"                    nil                                                  (throws Exception)
  "%{(quotation)}"                   {'quotation stem.core-test/quotation}                 (quotation)
- "%{#=(java.lang.System/exit 42)}"   nil                                                  (throws Exception))
+ "%{#=(java.lang.System/exit 42)}"   nil                                                  (throws Exception)
+ "%{(capitalize \"${name}\")}"      {'capitalize clojure.string/capitalize}               "Sathya"
+ )
