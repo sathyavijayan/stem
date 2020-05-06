@@ -1,4 +1,4 @@
-(ns stem.core
+(ns stem.deprecated.core
   (:require [clojure.edn :as edn]
             [clojure.string :as str]))
 

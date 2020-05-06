@@ -1,46 +1,68 @@
 # stem
-'stem' is a simple templating library for clojure. stem was created to offer a simpler, light weight alternative to template rendering.
+'stem' is a simple templating library for clojure. stem was created to
+offer a simpler, light weight alternative to template rendering.
+
+## Notice of relocation
+'stem' is moving to a new organisation and moving to a 'sane'
+versioning system. The library now uses
+[sci](https://github.com/borkdude/sci) to render expressions.
+
+``` clojure
+[sats/stem "0.1.0-alpha1"]
+```
+
+### Backward compatibility
+The previous version of the API is available in the
+`stem.deprecated.core` namespace. Just require this namespace instead
+of `stem.core`. This namespace will be removed in future releases, and
+the new API has powerful features.
 
 ## Usage
 ```clojure
-[stem "1.0.3"]
+[satssats/stem "0.1.0-alpha1"]
 
 ;; In your namespace:
 (ns my.ns
-    (:require [stem.core :refer :all]))
+    (:require [sats.stem.core :refer :all]))
 ```
 
 ### Rendering a stem template
 stem template supports `variables` and `expressions`.
 
 #### Variables
-Variables in the template must be wrapped within `${}`. For eg:`${name}`. stem substitues variables with values supplied in the bindings map.
-```
-;; returns "Hello, World"
-;; values for variables must be supplied in the bindings map, keyed by
-;; variable name (as keyword).
-(let [bindings {:name "World"}]
-    (render-string bindings "Hello, ${name}"))
-```
-#### Expressions
-Expressions must be wrapped within `%{}`. Expressions are simple s-expressions and support any function that is declared in the bindings map.  For eg:
-```clojure
-;; returns "HELLO, WORLD"
-;; functions used in expressions must also be declared in the bindings map
-;; keyed by the function name/alias (as symbol).
-(let [bindings {'capitalize clojure.string/capitalize}]
-    (render-string bindings "Hello, %{(capitalize \"Hello, World\"}"))
+Variables in the template must be wrapped within `{{ }}`. For eg:
+`{{ name }}`. stem substitues variables with values supplied in the
+data map.
 
-;; variables can be used within expressions
-;; returns "Hello, WORLD"
-(let [bindings {:name       "world"
-                'capitalize 'clojure.string/capitalize}]
-    (render-string bindings "Hello, %{(capitalize \"${name}\"}"))
+```clojure
+(render-string "Hello {{ name }}" {:name "sathya"})
+; => "Hello sathya"
+```
+
+#### Expressions
+Expressions must be wrapped within `{% %}`. Expressions are valid
+clojure expression supported by the
+[sci](https://github.com/borkdude/sci) library. Variables can be used
+inside expressions.
+
+```clojure
+(render-string "Hello {% (capitalize {{ name }}) %}"
+               {:name "sathya"}
+               :bindings
+               {'capitalize clojure.string/capitalize})
+; => Hello Sathya
+
+(render-string "{% (capitalize {{ name }}) %} lives in {% (get {{ country-names }} {{ country-code }}) %}."
+               {:user-name :sathya, :country-code :uk :country-names {:uk "United Kingdom"}}
+               :bindings
+               {'capitalize clojure.string/capitalize})
+; => Sathya lives in United Kingdom
 ```
 
 ### Roadmap
-* Utility functions to return analysis of a template.
-* Support to render files.
+* Useful functions to make template authoring easier.
+* Render files.
+* Caching and speed improvements.
 
 
 ## License
