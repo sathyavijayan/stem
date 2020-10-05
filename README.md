@@ -8,7 +8,7 @@ versioning system. The library now uses
 [sci](https://github.com/borkdude/sci) to render expressions.
 
 ``` clojure
-[sats/stem "0.1.0-alpha1"]
+[sats/stem "0.1.0-alpha2"]
 ```
 
 ### Backward compatibility
@@ -19,7 +19,7 @@ the new API has powerful features.
 
 ## Usage
 ```clojure
-[satssats/stem "0.1.0-alpha1"]
+[sats/stem "0.1.0-alpha2"]
 
 ;; In your namespace:
 (ns my.ns
@@ -58,6 +58,11 @@ inside expressions.
                {'capitalize clojure.string/capitalize})
 ; => Sathya lives in United Kingdom
 ```
+#### Options
+| Option | Type | Description |
+|--|--|--|
+| :ignore-missing-data? | boolean | When set to true, stem will not throw an error when rendering variables for which data is missing or nil, replacing them with an empty string instead. **(Default: false)** | 
+
 
 ### Roadmap
 * Useful functions to make template authoring easier.
