@@ -1,4 +1,4 @@
-(defproject sats/stem "0.1.0-alpha1"
+(defproject sats/stem "0.1.0-alpha2"
   :description "stem - simple templating library"
   :url "https://github.com/sathyavijayan/stem"
   :license {:name "Apache License 2.0"

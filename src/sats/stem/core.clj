@@ -81,15 +81,18 @@
 ;;                                                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn- evaluate-expressions
-  [{:keys [bindings] :as opts} s data]
+  [{:keys [bindings ignore-missing-data?] :as opts} s data]
   (let [bindings' (assoc bindings data-key data)
         tokens    (tokenise-exprs s)]
     (reduce
-     (fn [s [match expr]]
-       (let [replacement (sci/eval-string expr {:bindings bindings'})]
-         (str/replace s match replacement)))
-     s
-     tokens)))
+      (fn [s [match expr]]
+        (if-let [replacement (sci/eval-string expr {:bindings bindings'})]
+          (str/replace s match replacement)
+          (if ignore-missing-data?
+            (str/replace s match "")
+            (throw (ex-info "token missing" {:error :token-missing})))))
+      s
+      tokens)))
 
 
 (defn render-string
@@ -104,19 +107,19 @@
 (comment
 
   (render-string
-   "Hello {{ name }}. Please select a product.\n{% (join-with \"\n\" (for [p {{ products }}] (name (:name p)))) %}"
-   {:name "John"
-    :products
-    [{:name :ipad}
-     {:name :phone}
-     {:name :oculus}]}
-   :bindings {})
+    "Hello {{ name }}. Please select a product.\n{% (join-with \"\n\" (for [p {{ products }}] (name (:name p)))) %}"
+    {:name "John"
+     :products
+     [{:name :ipad}
+      {:name :phone}
+      {:name :oculus}]}
+    :bindings {})
 
   (render-string
-   "Hello {% (get {:male \"Mr\" :other \"Mx\"} {{ gender }}) %}.{% (capitalize {{ name }}) %}"
-   {:name "sathya" :gender :male}
-   :bindings
-   {'capitalize clojure.string/capitalize})
+    "Hello {% (get {:male \"Mr\" :other \"Mx\"} {{ gender }}) %}.{% (capitalize {{ name }}) %}"
+    {:name "sathya" :gender :male}
+    :bindings
+    {'capitalize clojure.string/capitalize})
 
   ;;
 

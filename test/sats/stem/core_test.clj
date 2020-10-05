@@ -86,3 +86,12 @@
  "Sathya lives in United Kingdom."
  ;;
  )
+
+(facts "test behaviour for missing data"
+  (fact "ignore-missing-data? false or nil throws exception"
+    (core/render-string "Hello, {{ name }}" {}) => (throws Exception)
+    (core/render-string "Hello, {{ name }}" {} :ignore-missing-data? false) => (throws Exception))
+
+  (fact "ignore-missing-data? true replaces token with empty string"
+    (core/render-string "Hello, {{ name }}" {} :ignore-missing-data? true) => "Hello, "
+    (core/render-string "Hello, {{ name }}.{{ greeting }}" {:greeting "Welcome!"} :ignore-missing-data? true) => "Hello, .Welcome!"))
